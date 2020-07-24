@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {% block head_content %}
+    {% endblock %}
+    
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <title>Login/signup</title>
+    {% block css %}
+    {% endblock %}
+  </head>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    {%if request.user %}
+    <a class="navbar-brand" href="#">{{request.user}}</a>
+
+    {% else %}
+    <a class="navbar-brand" href="#">TheBlogpost</a>
+    {% endif %}
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="/userpage">Home <span class="sr-only">(current)</span></a>
+        </li>
+        
+        
+        
+      </ul>
+      <form class="form-inline my-2 my-lg-0" action="/userpage/search/" method="get">
+        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="username">
+        <button class="btn btn-success my-2 my-sm-0" type="submit">Search</button>
+      </form>
+      <!-- Button trigger modal -->
+      {% block navlogin %}
+      {% endblock %}
+    </div>
+  </nav>
+{% if messages %}
+      {% for msg in messages %}
+        <div class="alert alert-{{msg.tags}} alert-dismissible fade show" role="alert">
+          <strong>{{msg}}</strong>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      {% endfor %}
+{% endif %}
+  <body>
+    {% block body %}
+    {% endblock %}
+    {% block modal %}
+    {% endblock %}
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+    {% block js %}
+    {% endblock %}
+  </body>
+</html>

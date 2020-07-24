@@ -1,0 +1,69 @@
+from django.shortcuts import render,HttpResponse,redirect
+from .models import Post,Profile,Like
+from django.contrib import messages
+from django.contrib.auth.models import  User
+# Create your views here.
+def userhome(request):
+    posts = Post.objects.all().order_by('-pk')
+    data = {"posts": posts}
+    return render(request,"userpage/postfeed.html",data)
+
+
+def post(request):
+    if request.method == 'POST':
+        image_ = request.FILES['image']
+        user_ = request.user
+        caption_= request.POST.get('captions','')
+
+        post_obj = Post(user=user_,caption=caption_,image=image_)
+        post_obj.save()
+        messages.success(request,'post successful')
+        return redirect('/userpage')
+    else:
+        messages.error(request,'sorry !! somethimg went wrong')
+        return redirect('/userpage')
+
+
+def delpost(request,ID):
+    post_= Post.objects.filter(pk=ID)
+    image_path = post_[0].image.url
+    post_.delete()
+    messages.info(request,'post deleted successfully')
+    return redirect('/userpage')
+
+
+def userprofile(request,username):#if user exist
+    user= User.objects.filter(username=username)# filter list return krta h
+    if user:
+        user=user[0]
+        profile = Profile.objects.get(user=user)
+        bio = profile.bio
+        post_ = getPost(user)
+        conn= profile.connection
+        follower,following = profile.follower,profile.following
+        user_img =profile.user_Image
+        data={'username':username,
+              'bio':bio,
+              'conn':conn,
+              'follower':follower,
+              'following':following,
+              'userimg':user_img,
+              'posts':post_,}
+    else : return HttpResponse("No such User")
+    return render(request,"userpage/userprofile.html",data)
+
+
+def getPost(user):
+    post_obj=Post.objects.filter(user=user)
+    imgList = [post_obj[i:i+3] for i in range (0,len(post_obj),3)]
+    return imgList
+
+
+def likepost(request):
+    id = request.GET.get("likeId","")
+
+    post = Post.objects.filter(pk=id)
+    user = request.user
+    Like.like(post,user)
+    return HttpResponse("liked")
+

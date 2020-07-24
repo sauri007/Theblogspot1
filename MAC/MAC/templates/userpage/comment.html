@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block body%}
+	<div class="container my-2">
+		<form method="GET" >
+			<div class="form-group">
+				<label for="comment_text">Comment</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" id="comment_text" name="comment_text" placeholder="comment here">
+				</div>
+			</div>
+			<button class="btn btn-primary my-2 my-sm-0" type="submit">Done</button>
+		</form>
+	</div>
+	<div class="container">
+		<div class="card">
+			<div class="card-header">
+				<a href="" style="color: black;">username </a> <small></small>
+			</div>
+			<div class="card-body">
+				
+				<p class="card-text">comment</p>
+				<small><p class="card-text">duration</p></small>
+				
+				
+			</div>
+		</div>
+		
+	</div>
+{% endblock%}

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block body %}
+	<div class="container my-4 ">
+		<div class="media">
+			<img src="{{userimg.url}}" style="height:200px;width: 200px;border-radius: 50%" class="align-self-start mr-3" alt="...">
+			<div class="media-body" style="padding-left: 2%;padding-top: 3%">
+				<h4 class="mt-0">{{username}}</h4>
+					{% if connection %}
+				<a class="btn btn-primary mx-2 my-sm-0" type="submit" id="follow" name="follow" role="button" href="{% url 'follow' username %}">Unfollow</a>
+					{% else %}
+				<a class="btn btn-primary mx-2 my-sm-0" type="submit" id="follow" name="follow" role="button" href="{% url 'follow' username %}">Follow</a>
+				    {% endif %}
+
+					
+				<p>Follower : {{follower}}   Following : {{following}} </p>
+				<p><b>{{bio}}</b></p>
+			</div>
+		</div>
+		<hr style="border-top:2px solid #000000">
+
+		<div class="row">
+			{% for i in posts %}
+			{% for j in i %}
+
+				<div class="col-md-4">
+					<img src="{{j.image.url}}" style="height:200px;width: 250px;margin-bottom:40px;border:2px; ">
+				</div>
+			{% endfor %}
+			
+			{% endfor %}
+		</div>
+	</div>
+	{% endblock %}
+	{% block js %}
+	<script>
+		$("#follow").click(function(e){
+			e.preventDefault();
+			var href = this.href;
+			$.ajax({
+				url:href,
+				success : function(response){
+					if(response["following"]){
+						$("#follow").html("Unfollow");
+					}
+					else{
+						$("#follow").html("Follow");
+					}
+
+				}
+			})
+		})
+
+	</script>
+	{% endblock %}
+	

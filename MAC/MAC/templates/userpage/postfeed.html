@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head_content %}
+	<link rel="stylesheet" href="{% static 'userpage/zuck.js-master/demo/style.css' %}">
+	<!-- lib styles -->
+	<link rel="stylesheet" href="{% static 'userpage/zuck.js-master/dist/zuck.min.css' %}">
+	
+	<!-- lib skins -->
+	<link rel="stylesheet" href="{% static 'userpage/zuck.js-master/dist/skins/snapgram.css' %}">
+{% endblock %}
+{% block css %}
+	<style type="text/css">
+		#postimg{
+			max-width: 600px;
+			max-height:500px ;
+			
+		}
+		.post_div{
+			width: 680px;
+			height:auto;
+		}
+	</style>
+{% endblock %}
+{% block body %}
+	<div id="fb-root"></div>
+	<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v7.0" nonce="fjlGciWb"></script>
+	
+	<div id="stories" class="storiesWrapper"></div>
+	{% for i in posts %}
+		
+		<div class="container my-4 post_div" id="{{i.id}}">
+			<div class="card">
+				<div class="card-header">
+					<a href="{% url 'userprofile' i.user %}" style="color: black;"><b>{{i.user}}</b> </a> <small>{{i.date.date}} {{i.date.time}}</small>
+				</div>
+				<div class="card-body">
+					<h5 class="card-title"></h5>
+					<p class="card-text">{{i.caption}}</p>
+					{% if i.image %}
+						<center><img src="{{i.image.url}}" id="postimg">
+					{% endif %}
+					<!-- <hr size="30px"> -->
+					<!-- <button class="btn btn-primary like" id="{{i.id}}"> -->
+					<!-- {% if i in liked_post %}					 -->
+					<!-- <a href="{% url 'like_dislike_post' %} " style="color: white;" id="likebtn{{ i.id }}" >Liked</a> -->
+					<!-- {% else %} -->
+					<div class="fb-like" data-href="http://127.0.0.1:8000/userpage/{{i.id}}" data-width="" data-layout="standard" data-action="like" data-size="large" data-share="true">
+						
+					</div>
+					
+					{% if i.user == request.user %}
+						<a href="{% url 'deletepost' i.id %}" id="{{i.id}}" class="btn btn-danger my-2 delete" style="padding-top: 2px;padding-bottom: 2px;padding-right: 5px;padding-left: 5px;margin-left: 0;">Delete Post</a>
+					{% endif %}
+					<div class="fb-comments" data-href="http://127.0.0.1:8000/userpage/{{i.id}}" data-numposts="5" data-width=""></div>
+					<!-- <a href="{% url 'like_dislike_post' %} " style="color: white;" id="likebtn{{ i.id }}" >Like</a> -->
+					<!-- {% endif %} -->
+					<!-- </button> -->
+					<!-- <a role="button" href="{% url 'comment' %}" class="btn btn-warning">Comment</a> -->
+					<!-- <a href="#" class="btn btn-success">Repost</a> -->
+					
+					</center>
+				</div>
+			</div>
+		</div>
+		
+	{% endfor %}
+{% endblock %}
+{% block navlogin %}
+	<!-- Button trigger modal -->
+	<button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#postModal">
+	post
+	</button>
+	<a href="{% url 'userlogout' %}"><button id="" class="btn btn-success mx-2 ">Logout</button></a>
+{% endblock %}
+{% block modal %}
+	
+	<!-- Modal -->
+	<div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="postModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="postModalLabel">Let's Show</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form method="post" action="/userpage/post" enctype="multipart/form-data">{% csrf_token %}
+						<label for="image">Image:</label>
+						<input type="file" name="image" id="image">
+						<br><br><br>
+						<label for="capttext">captions:</label>
+						<br>
+						<textarea name="captions" id="captions" cols="55" rows="10"></textarea>
+						<hr>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-primary">Post</button>
+					</form>
+					
+				</div>
+			</div>
+		</div>
+	{% endblock %}
+	
+	{% block js %}
+		<script type="text/javascript">
+			// delete button
+			$(".delete").click(function(e){
+				var id = this.id;
+				var href = this.href;
+				
+				e.preventDefault();
+				$.ajax({
+					url:href,
+					data:{},
+				});
+				$("#"+id).fadeOut(1000);
+			})
+		// like button
+			$(".like").click(function(e){
+				var id = this.id;
+				var href = $('.like').find('a').attr('href');
+				console.log(id,href);
+				
+				e.preventDefault();
+				$.ajax({
+					url:href,
+					data:{
+						'likeId':id
+					},
+					success:function(response){
+						console.log(response)
+						if (response.liked){
+							$('#likebtn' + id).html("Liked");
+						}
+						else {
+							$('#likebtn' + id).html("Like");
+						}
+						
+					}
+				})
+				
+				
+			});
+				// $("#"+id).fadeOut(1000);
+			// })
+		</script>
+		
+		<script src="{% static 'userpage/zuck.js-master/dist/zuck.min.js' %}"></script>
+		<script src="{% static 'userpage/zuck.js-master/demo/script.js' %}"></script>
+	{% endblock %}
