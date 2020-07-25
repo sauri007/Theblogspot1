@@ -20,9 +20,10 @@ from django.conf.urls.static import static
 from .import views
 
 urlpatterns = [
-    path("", views.index, name="index"),
+    # path("", views.index, name="index"),
+    path("", include("account.urls"),name='account_app'),
     path('admin/', admin.site.urls),
-    path('shop/', include("shop.urls")),
+    # path('shop/', include("shop.urls")),
     path('account/', include("account.urls"),name='account_app'),
     path('userpage/', include("userpage.urls"),name='user_app'),
     path('story/', include("story.urls"),name='story'),
